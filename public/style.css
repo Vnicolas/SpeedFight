@@ -1,0 +1,22 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Arial", "serif";
+    color: #000;
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.game-container {
+    position: absolute;
+    height: calc(100% - 58px);
+    width: 100%;
+    background-image: url(./img/bg-1.gif);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
