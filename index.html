@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Daft Fight</title>
+    <title>Speed battle</title>
 </head>
 <body>
-    <header>GET READY TO FIGHT</header>
+
+    <header>
+        <span class="blink-border">GET READY TO FIGHT !</span>
+    </header>
     <div class="game-container">
-
-
+        <button id="join-button" onclick="joinBattle()">JOIN BATTLE</button>
+        <span id="fighter-1"></span>
+        <span id="fighter-2"></span>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 </body>
 </html>

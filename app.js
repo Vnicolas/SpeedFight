@@ -9,22 +9,30 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-const fighters = [];
+const players = [];
+let availableFighters = 2
 
 io.on('connection', (socket) => {
-    if (fighters.indexOf(socket.id) < 0) {
-        fighters.push(socket.id);
+    if (players.indexOf(socket.id) < 0) {
+        players.push(socket.id);
+        socket.join('players room');
         console.log('New fighter connected', socket.id);
-        socket.join('fighters room');
-        if (fighters.length === 2) {
-            io.in('fighters room').emit('game-ready');
+        if (players.length < 2) {
+            io.in('players room').emit('game-not-ready');
+        } else {
+            socket.emit('lastPlayer', availableFighters);
+            io.in('players room').emit('game-ready');
         }
     }
 
     socket.on('disconnect', () => {
-        const socketIndex = fighters.indexOf(socket.id);
-        fighters.splice(socketIndex, 1);
-        console.log('Fighter with ID '+ socket.id + ' disconnected.');
-        io.in('fighters room').emit('game-not-ready');
+        const socketIndex = players.indexOf(socket.id);
+        players.splice(socketIndex, 1);
+        console.log('Player with ID '+ socket.id + ' disconnected.');
+        io.in('players room').emit('game-not-ready');
+    });
+
+    socket.on('chooseFighter', () => {
+        availableFighters -= 1;
     });
 });
