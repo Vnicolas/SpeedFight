@@ -12,41 +12,75 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-let availableFighters = 2;
-let fightersReady = 0;
+let firstPlayerConnected = false;
+let lastPlayerConnected = false;
+let firstPlayerReady = false;
+let lastPlayerReady = false;
+let signalShown = false;
+let fighterHasAttacked = false;
 
 function generateTimer() {
     return Math.floor(Math.random() * (MAX_TIMER - MIN_TIMER + 1) + MIN_TIMER) * 1000;
 }
 
-
 io.on('connection', (socket) => {
-    if (availableFighters === 2) {
+
+    if (firstPlayerConnected === false) {
         socket.join('players room');
-        availableFighters -= 1;
-    } else if (availableFighters === 1) {
+        firstPlayerConnected = true;
+        socket.player = 1;
+        io.to(`${socket.id}`).emit('firstPlayer');
+        io.in('players room').emit('opponentConnected', socket.player);
+    } else {
         socket.join('players room');
-        availableFighters -= 1;
+        lastPlayerConnected = true;
+        socket.player = 2;
         io.to(`${socket.id}`).emit('lastPlayer');
+        io.in('players room').emit('opponentConnected', socket.player);
     }
 
+
     socket.on('disconnect', () => {
-        io.in('players room').emit('game-not-ready');
-        availableFighters += 1;
-        fightersReady -= 1;
-        // Prevent page reload by both players
-        if (fightersReady < 0) {
-            fightersReady = 0;
+        if (socket.player === 1) {
+            firstPlayerConnected = false;
+            firstPlayerReady = false;
+        } else {
+            lastPlayerConnected = false;
+            lastPlayerReady = false;
         }
     });
 
     socket.on('ready', () => {
-        fightersReady += 1;
-        if (fightersReady === 2) {
+        if (socket.player === 1) {
+            firstPlayerReady = true;
+        } else if (socket.player === 2){
+            lastPlayerReady = true;
+        }
+        if (firstPlayerReady && lastPlayerReady) {
+            fighterHasAttacked = false;
             io.in('players room').emit('game-ready');
             setTimeout(() => {
-                io.in('players room').emit('signal');
+                if (signalShown === false) {
+                    io.in('players room').emit('signal');
+                    signalShown = true;
+                }
             }, generateTimer());
+        }
+    });
+
+    socket.on('attack', () => {
+        if (fighterHasAttacked === false && signalShown === false) {
+            fighterHasAttacked = true;
+            io.in('players room').emit('endGame');
+            io.to(`${socket.id}`).emit('looser');
+            socket.to('players room').emit('winner');
+            signalShown = false;
+        } else if (fighterHasAttacked === false && signalShown === true) {
+            fighterHasAttacked = true;
+            io.in('players room').emit('endGame');
+            io.to(`${socket.id}`).emit('winner');
+            socket.to('players room').emit('looser');
+            signalShown = false;
         }
     });
 });

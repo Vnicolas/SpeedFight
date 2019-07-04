@@ -80,6 +80,26 @@ header span.blink-opacity {
     background-position: 0% 26.5%;
 }
 
+.icon-fighter {
+    position: absolute;
+    z-index: 99;
+    color: #001fff;
+}
+
+.icon-fighter.blink-opacity {
+    animation: blink-opacity .7s linear infinite;
+}
+
+.icon-fighter.sayan {
+    left: 24px;
+    top: -13px;
+}
+
+.icon-fighter.ennemy {
+    left: 40px;
+    top: -2px;
+}
+
 #join-button {
     position: absolute;
     top: 20em;

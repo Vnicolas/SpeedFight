@@ -5,29 +5,49 @@ let gameIsReady = false;
 let gameIsStarted = false;
 let signalShown = false;
 
-// Socket events
-socket.on('game-ready', () => {
-    launchGame();
-});
-socket.on('game-not-ready', () => {
-    waitOpponent();
-});
-socket.on('lastPlayer', () => {
-    player = 2;
-});
-socket.on('signal', showSignal);
-
 // HTML elements
 const btnJoin = document.querySelector('#join-button');
 const header = document.querySelector('header span');
 const sayan = document.querySelector('#fighter-1');
+const sayanIndicator = document.querySelector('.icon-fighter.sayan');
 const ennemy = document.querySelector('#fighter-2');
+const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
 const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
+
+// Socket events
+socket.on('game-ready', () => {
+    launchGame();
+});
+socket.on('firstPlayer', () => {
+    sayanIndicator.classList.add('blink-opacity');
+    sayanIndicator.classList.remove('hidden');
+    ennemyIndicator.classList.add('hidden');
+});
+socket.on('lastPlayer', () => {
+    player = 2;
+    sayanIndicator.classList.add('hidden');
+    ennemyIndicator.classList.add('blink-opacity');
+    ennemyIndicator.classList.remove('hidden');
+});
+socket.on('looser', () => {
+    hideSignal();
+    container.classList.remove('focus');
+});
+socket.on('winner', () => {
+    hideSignal();
+    container.classList.remove('focus');
+});
+//socket.on('endGame', reset);
+socket.on('signal', showSignal);
 
 btnJoin.addEventListener('click', joinBattle);
 
 // Functions
+function animateFighter() {
+
+}
+
 function showSignal() {
     signalShown = true;
     signal.style.visibility = 'visible';
@@ -44,6 +64,9 @@ function launchGame() {
     container.classList.add('focus');
     hideButton();
     prepareFighters();
+    document.addEventListener('keyup', () => {
+        socket.emit('attack');
+    });
 }
 
 function hideButton () {
@@ -57,7 +80,7 @@ function showButton () {
 function joinBattle () {
     hideButton();
     waitOpponent();
-    socket.emit('ready');
+    socket.emit('ready', player);
 }
 
 function waitOpponent() {
@@ -72,6 +95,12 @@ function waitOpponent() {
     header.innerHTML = 'WAITING OPPONENT...';
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
+    if (player === 1) {
+        sayanIndicator.classList.remove('blink-opacity');
+    } else {
+        ennemyIndicator.classList.remove('blink-opacity');
+    }
+
 }
 
 function reset() {
@@ -85,6 +114,8 @@ function reset() {
     header.removeAttribute('style');
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
+    ennemyIndicator.classList.remove('hidden');
+    sayanIndicator.classList.remove('hidden');
 }
 
 function prepareFighters() {
