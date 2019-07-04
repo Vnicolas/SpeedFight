@@ -41,6 +41,8 @@ header span.blink-border {
 
 header span.blink-opacity {
     animation: blink-opacity 1.5s linear infinite;
+    color: #414141;
+    border-color: #414141;
 }
 
 .game-container {

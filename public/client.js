@@ -1,18 +1,20 @@
+// Variables initialization
 let player = 1;
 let gameIsReady = false;
 const socket = io('http://localhost:3000');
 
+// Socket events
 socket.on('game-ready', () => {
     initGame();
 });
 socket.on('game-not-ready', () => {
     waitOpponent();
 });
-
 socket.on('lastPlayer', () => {
     player = 2;
 });
 
+// HTML elements
 const btnJoin = document.querySelector('#join-button');
 const header = document.querySelector('header span');
 const sayan = document.querySelector('#fighter-1');
@@ -21,6 +23,7 @@ const container = document.querySelector('.game-container');
 
 btnJoin.addEventListener('click', joinBattle);
 
+// Functions
 function hideButton () {
     btnJoin.classList.add('hidden');
 }
@@ -43,8 +46,6 @@ function waitOpponent() {
     header.classList.add('blink-opacity');
     header.classList.remove('blink-border');
     header.innerHTML = 'WAITING OPPONENT...';
-    header.style.color = '#414141';
-    header.style.borderColor = '#414141';
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
 }
