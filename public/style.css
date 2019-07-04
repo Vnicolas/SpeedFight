@@ -132,3 +132,18 @@ header span.blink-opacity {
     width: 225px;
     background-size: cover;
 }
+
+#youWin {
+    position: absolute;
+    z-index: 99;
+    font-size: 2em;
+    left: calc(50% - 170px);
+    top: 25%;
+    padding: 20px;
+    border: 6px solid #000;
+    background-color: #FFD700;
+}
+
+#youLoose {
+
+}

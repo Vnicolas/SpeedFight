@@ -14,6 +14,7 @@ const ennemy = document.querySelector('#fighter-2');
 const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
 const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
+const win = document.querySelector('#youWin');
 
 // Socket events
 socket.on('game-ready', () => {
@@ -31,21 +32,38 @@ socket.on('lastPlayer', () => {
     ennemyIndicator.classList.remove('hidden');
 });
 socket.on('looser', () => {
-    hideSignal();
-    container.classList.remove('focus');
+
 });
 socket.on('winner', () => {
-    hideSignal();
-    container.classList.remove('focus');
+
 });
-//socket.on('endGame', reset);
+socket.on('endGame', animateFighter);
 socket.on('signal', showSignal);
 
 btnJoin.addEventListener('click', joinBattle);
 
 // Functions
-function animateFighter() {
+function animateFighter(winner) {
+    container.classList.remove('focus');
+    hideSignal();
+    container.style.animation = 'blink-opacity .5s linear';
+    if (winner === 1) {
+        sayan.style.backgroundPosition = '252% 13.5%';
+        sayan.style.left = '50%';
+        ennemy.style.backgroundPosition = '53% 153.1%';
+        setTimeout(() => {
+            sayan.style.backgroundPosition = '23.5% 0.1%';
+            container.removeAttribute('style');
+        }, 800);
+    } else {
 
+    }
+
+    setTimeout(() => {
+        if (winner === player) {
+            win.classList.remove('hidden');
+        }
+    }, 500);
 }
 
 function showSignal() {
