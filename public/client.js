@@ -4,17 +4,12 @@ let isWaiting = false;
 const socket = io('http://localhost:3000');
 
 socket.on('game-ready', () => {
-    gameIsReady = true;
     initGame();
 });
 socket.on('game-not-ready', () => {
-    gameIsReady = false;
-    if (isWaiting === true) {
-        waitOpponent();
-    } else {
-        reset();
-    }
+    waitOpponent();
 });
+
 socket.on('lastPlayer', () => {
     player = 2;
     console.log('lastPlayer', player);
@@ -42,6 +37,7 @@ function joinBattle () {
 }
 
 function waitOpponent() {
+    gameIsReady = false;
     isWaiting = true;
     hideButton();
     header.classList.remove('hidden');
@@ -66,6 +62,7 @@ function reset() {
 }
 
 function initGame () {
+    gameIsReady = true;
     header.classList.add('hidden');
     hideButton();
     prepareFighters();
