@@ -100,3 +100,15 @@ header span.blink-opacity {
 .hidden {
     display: none;
 }
+
+#signal {
+    position: absolute;
+    z-index: 99;
+    visibility: hidden;
+    left: calc(50% - 130px);
+    top: 15%;
+    background-image: url(./img/warning-icon.png);
+    height: 255px;
+    width: 225px;
+    background-size: cover;
+}

@@ -3,6 +3,9 @@ const app = express();
 const server = app.listen(3000);
 const io = require('socket.io')(server);
 
+const MIN_TIMER = 2;
+const MAX_TIMER = 6;
+
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -11,6 +14,11 @@ app.get('/', (req, res) => {
 
 let availableFighters = 2;
 let fightersReady = 0;
+
+function generateTimer() {
+    return Math.floor(Math.random() * (MAX_TIMER - MIN_TIMER + 1) + MIN_TIMER) * 1000;
+}
+
 
 io.on('connection', (socket) => {
     if (availableFighters === 2) {
@@ -36,6 +44,9 @@ io.on('connection', (socket) => {
         fightersReady += 1;
         if (fightersReady === 2) {
             io.in('players room').emit('game-ready');
+            setTimeout(() => {
+                io.in('players room').emit('signal');
+            }, generateTimer());
         }
     });
 });
