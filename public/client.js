@@ -4,6 +4,7 @@ let isWaiting = false;
 const socket = io('http://localhost:3000');
 
 socket.on('game-ready', () => {
+    gameIsReady = true;
     initGame();
 });
 socket.on('game-not-ready', () => {
@@ -15,15 +16,16 @@ socket.on('game-not-ready', () => {
     }
 });
 socket.on('lastPlayer', () => {
-    console.log('You are the last player');
     player = 2;
-    hideButton();
+    console.log('lastPlayer', player);
 });
 
 const btnJoin = document.querySelector('#join-button');
 const header = document.querySelector('header span');
 const sayan = document.querySelector('#fighter-1');
 const ennemy = document.querySelector('#fighter-2');
+
+btnJoin.addEventListener('click', joinBattle);
 
 function hideButton () {
     btnJoin.classList.add('hidden');
@@ -36,11 +38,11 @@ function showButton () {
 function joinBattle () {
     hideButton();
     waitOpponent();
-    socket.emit('chooseFighter');
-    isWaiting = true;
+    socket.emit('ready');
 }
 
 function waitOpponent() {
+    isWaiting = true;
     hideButton();
     header.classList.remove('hidden');
     header.classList.add('blink-opacity');
@@ -64,9 +66,8 @@ function reset() {
 }
 
 function initGame () {
-    hideButton();
     header.classList.add('hidden');
-    gameIsReady = true;
+    hideButton();
     prepareFighters();
 }
 

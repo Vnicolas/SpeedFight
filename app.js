@@ -9,30 +9,33 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-const players = [];
-let availableFighters = 2
+let availableFighters = 2;
+let fightersReady = 0;
 
 io.on('connection', (socket) => {
-    if (players.indexOf(socket.id) < 0) {
-        players.push(socket.id);
+    if (availableFighters === 2) {
         socket.join('players room');
-        console.log('New fighter connected', socket.id);
-        if (players.length < 2) {
-            io.in('players room').emit('game-not-ready');
-        } else {
-            socket.emit('lastPlayer', availableFighters);
-            io.in('players room').emit('game-ready');
-        }
+        availableFighters -= 1;
+    } else if (availableFighters === 1) {
+        socket.join('players room');
+        availableFighters -= 1;
+        io.to(`${socket.id}`).emit('lastPlayer');
     }
 
     socket.on('disconnect', () => {
-        const socketIndex = players.indexOf(socket.id);
-        players.splice(socketIndex, 1);
-        console.log('Player with ID '+ socket.id + ' disconnected.');
         io.in('players room').emit('game-not-ready');
+        availableFighters += 1;
+        fightersReady -= 1;
+        // Prevent page reload by both players
+        if (fightersReady < 0) {
+            fightersReady = 0;
+        }
     });
 
-    socket.on('chooseFighter', () => {
-        availableFighters -= 1;
+    socket.on('ready', () => {
+        fightersReady += 1;
+        if (fightersReady === 2) {
+            io.in('players room').emit('game-ready');
+        }
     });
 });
