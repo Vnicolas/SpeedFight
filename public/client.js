@@ -1,6 +1,5 @@
 let player = 1;
 let gameIsReady = false;
-let isWaiting = false;
 const socket = io('http://localhost:3000');
 
 socket.on('game-ready', () => {
@@ -12,13 +11,13 @@ socket.on('game-not-ready', () => {
 
 socket.on('lastPlayer', () => {
     player = 2;
-    console.log('lastPlayer', player);
 });
 
 const btnJoin = document.querySelector('#join-button');
 const header = document.querySelector('header span');
 const sayan = document.querySelector('#fighter-1');
 const ennemy = document.querySelector('#fighter-2');
+const container = document.querySelector('.game-container');
 
 btnJoin.addEventListener('click', joinBattle);
 
@@ -38,9 +37,9 @@ function joinBattle () {
 
 function waitOpponent() {
     gameIsReady = false;
-    isWaiting = true;
     hideButton();
     header.classList.remove('hidden');
+    container.classList.remove('focus');
     header.classList.add('blink-opacity');
     header.classList.remove('blink-border');
     header.innerHTML = 'WAITING OPPONENT...';
@@ -64,6 +63,7 @@ function reset() {
 function initGame () {
     gameIsReady = true;
     header.classList.add('hidden');
+    container.classList.add('focus');
     hideButton();
     prepareFighters();
 }

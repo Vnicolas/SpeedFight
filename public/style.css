@@ -52,6 +52,11 @@ header span.blink-opacity {
     background-size: cover;
 }
 
+.focus {
+    box-shadow: inset 0px 0px 40px 25px rgba(0,0,0,1);
+}
+
+
 #fighter-1 {
     background-image: url(./img/adventurer.png);
     position: absolute;
