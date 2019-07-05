@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
             signalShown = false;
             io.in('players room').emit('game-ready');
             setTimeout(() => {
-                if (signalShown === false) {
+                if (fighterHasAttacked === false && signalShown === false) {
                     io.in('players room').emit('signal');
                     signalShown = true;
                 }

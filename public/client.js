@@ -16,21 +16,22 @@ const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
 const winnerMessage = document.querySelector('#winnerMessage');
 const btnRestart = document.querySelector('#restart');
+const playerLabel = document.querySelector('#player');
 
 // Socket events
 socket.on('game-ready', () => {
     launchGame();
 });
 socket.on('firstPlayer', () => {
-    sayanIndicator.classList.add('blink-opacity');
     sayanIndicator.classList.remove('hidden');
-    ennemyIndicator.classList.add('hidden');
+    sayanIndicator.classList.add('move');
+    playerLabel.innerHTML = 'You are ZACK';
 });
 socket.on('lastPlayer', () => {
     player = 2;
-    sayanIndicator.classList.add('hidden');
-    ennemyIndicator.classList.add('blink-opacity');
     ennemyIndicator.classList.remove('hidden');
+    ennemyIndicator.classList.add('move');
+    playerLabel.innerHTML = 'You are GRUNT';
 });
 socket.on('endGame', animateFighter);
 socket.on('signal', showSignal);
@@ -46,27 +47,27 @@ function animateFighter(winner) {
     if (winner === 1) {
         sayan.style.backgroundPosition = '252% 13.5%';
         sayan.style.left = '50%';
-        ennemy.style.backgroundPosition = '53% 153.1%';
+        ennemy.style.backgroundPosition = '40% -5.2%';
         setTimeout(() => {
             sayan.style.backgroundPosition = '23.5% 0.1%';
             container.removeAttribute('style');
         }, 800);
     } else {
-        ennemy.style.backgroundPosition = '-100% 15.9%';
+        ennemy.style.backgroundPosition = '10% 68.4%';
         ennemy.style.left = '46%';
         sayan.style.backgroundPosition = '146% 20%';
         setTimeout(() => {
-            ennemy.style.backgroundPosition = '31% 26.1%';
+            ennemy.style.backgroundPosition = '31% 78.9%';
             container.removeAttribute('style');
         }, 800);
     }
 
     setTimeout(() => {
         if (winner === 1) {
-            winnerMessage.innerHTML = 'PLAYER 1 WIN !';
+            winnerMessage.innerHTML = 'Winner ZACK !!';
             winnerMessage.classList.remove('hidden');
         } else {
-            winnerMessage.innerHTML = 'PLAYER 2 WIN !';
+            winnerMessage.innerHTML = 'Winner GRUNT !!';
         }
         winnerMessage.classList.remove('hidden');
         btnRestart.classList.remove('hidden');
@@ -91,6 +92,8 @@ function launchGame() {
     gameIsReady = true;
     header.classList.add('hidden');
     container.classList.add('focus');
+    sayanIndicator.classList.remove('move');
+    ennemyIndicator.classList.remove('move');
     hideButton();
     prepareFighters();
     document.addEventListener('keyup', attack);
@@ -116,17 +119,13 @@ function waitOpponent() {
     hideSignal();
     hideButton();
     header.classList.remove('hidden');
+    header.classList.remove('blink-border');
     container.classList.remove('focus');
     header.classList.add('blink-opacity');
     header.classList.remove('blink-border');
     header.innerHTML = 'AWAITING THE OPPONENT...';
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
-    if (player === 1) {
-        sayanIndicator.classList.remove('blink-opacity');
-    } else {
-        ennemyIndicator.classList.remove('blink-opacity');
-    }
 
 }
 
@@ -136,5 +135,5 @@ function reset() {
 
 function prepareFighters() {
     sayan.style.backgroundPosition = '70.5% 0%';
-    ennemy.style.backgroundPosition = '0% 0%';
+    ennemy.style.backgroundPosition = '0% -15.9%';
 }

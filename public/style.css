@@ -4,6 +4,22 @@
 @keyframes blink-opacity {
     50% { opacity: 0 }
 }
+@keyframes MoveUpDownSayan {
+    0%, 100% {
+        top: -9px;
+    }
+    50% {
+        top: -13px;
+    }
+}
+@keyframes MoveUpDownEnnemy {
+    0%, 100% {
+        top: 2px;
+    }
+    50% {
+        top: -3px;
+    }
+}
 
 @font-face {
     font-family: "Pixel";
@@ -75,44 +91,97 @@ header span.blink-opacity {
     bottom: 45px;
     height: 100px;
     width: 100px;
-    transform: scale(-4, 4);
+    transform: scale(4, 4);
     right: calc(50% - 190px);
-    background-position: 0% 26.5%;
+    background-position: -0.3% -10.5%;
+}
+
+#player {
+    position: absolute;
+    z-index: 9;
+    top: 10px;
+    left: 10px;
+    padding: 5px;
+    border: 1px solid #000;
+    background-color: #fff;
 }
 
 .icon-fighter {
     position: absolute;
     z-index: 99;
+    font-size: 5px;
+    padding: 1.4px 1px 1px 1px;
+    background-color: #ffffff;
+}
+
+.icon-fighter {
+    left: 18px;
+    top: -9px;
+    border: 1px solid #001fff;
     color: #001fff;
 }
 
-.icon-fighter.blink-opacity {
-    animation: blink-opacity .7s linear infinite;
+.icon-fighter.sayan.move {
+    animation: MoveUpDownSayan 1s steps(60, end) infinite;
 }
 
-.icon-fighter.sayan {
-    left: 24px;
-    top: -13px;
+.icon-fighter.sayan:after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 7px 0 7px;
+    border-color: #001fff transparent transparent transparent;
+    position: absolute;
+    top: 7.7px;
+    left: 4.5px;
+}
+@-moz-document url-prefix() {
+    .icon-fighter.sayan:after {
+        top: 8.4px;
+    }
 }
 
 .icon-fighter.ennemy {
-    left: 40px;
-    top: -2px;
+    left: 37px;
+    top: 2px;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+}
+.icon-fighter.ennemy.move {
+    animation: MoveUpDownEnnemy 1s steps(58, end) infinite;
+}
+
+.icon-fighter.ennemy:after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 7px 0 7px;
+    border-color: #ff0000 transparent transparent transparent;
+    position: absolute;
+    top: 7.7px;
+    left: 6px;
+}
+@-moz-document url-prefix() {
+    .icon-fighter.ennemy:after {
+        top: 8.4px;
+    }
 }
 
 #join-button {
     position: absolute;
-    top: 7em;
+    top: 20em;
     font-family: inherit;
     background-color: red;
     padding: 1em;
-    border: 3px outset #000;
+    border: 3px outset #030000;
     cursor: pointer;
     z-index: 99;
     left: calc(50% - 90px);
 }
 
-button:hover {
+#join-button:hover {
     color: #fff;
     border-color: #fff;
 }
@@ -134,14 +203,14 @@ button:hover {
 }
 
 #winnerMessage {
-    background-color: #FFD700;
+    background-color: #000000;
     position: absolute;
     z-index: 99;
     font-size: 2em;
     left: calc(50% - 250px);
     top: 25%;
     padding: 20px;
-    border: 6px solid #000;
+    color: #FFD700;
 }
 
 #restart {
@@ -154,5 +223,9 @@ button:hover {
     background-color: #2ebcf6;
     color: #000;
     cursor: pointer;
-    border: 3px outset #000;
+    border: 3px outset #030000;
+}
+
+#restart:hover {
+    color: #fff;
 }
