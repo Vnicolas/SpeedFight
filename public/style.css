@@ -112,7 +112,7 @@ header span.blink-opacity {
     left: calc(50% - 90px);
 }
 
-#join-button:hover {
+button:hover {
     color: #fff;
     border-color: #fff;
 }
@@ -133,20 +133,26 @@ header span.blink-opacity {
     background-size: cover;
 }
 
-.end-message {
+#winnerMessage {
+    background-color: #FFD700;
     position: absolute;
     z-index: 99;
     font-size: 2em;
-    left: calc(50% - 170px);
+    left: calc(50% - 250px);
     top: 25%;
     padding: 20px;
     border: 6px solid #000;
 }
 
-#youWin {
-    background-color: #FFD700;
-}
-
-#youLoose {
-    background-color: #ff0000;
+#restart {
+    position: absolute;
+    z-index: 99;
+    font-family: inherit;
+    top: 45%;
+    left: calc(50% - 32px);
+    padding: 1em;
+    background-color: #2ebcf6;
+    color: #000;
+    cursor: pointer;
+    border: 3px outset #000;
 }

@@ -1,5 +1,5 @@
 // Variables initialization
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:8888');
 let player = 1;
 let gameIsReady = false;
 let gameIsStarted = false;
@@ -14,8 +14,8 @@ const ennemy = document.querySelector('#fighter-2');
 const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
 const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
-const win = document.querySelector('#youWin');
-const loose = document.querySelector('#youLoose');
+const winnerMessage = document.querySelector('#winnerMessage');
+const btnRestart = document.querySelector('#restart');
 
 // Socket events
 socket.on('game-ready', () => {
@@ -32,12 +32,6 @@ socket.on('lastPlayer', () => {
     ennemyIndicator.classList.add('blink-opacity');
     ennemyIndicator.classList.remove('hidden');
 });
-socket.on('looser', () => {
-
-});
-socket.on('winner', () => {
-
-});
 socket.on('endGame', animateFighter);
 socket.on('signal', showSignal);
 
@@ -45,6 +39,7 @@ btnJoin.addEventListener('click', joinBattle);
 
 // Functions
 function animateFighter(winner) {
+    document.removeEventListener('keyup', attack);
     container.classList.remove('focus');
     hideSignal();
     container.style.animation = 'blink-opacity .5s linear';
@@ -67,11 +62,14 @@ function animateFighter(winner) {
     }
 
     setTimeout(() => {
-        if (winner === player) {
-            win.classList.remove('hidden');
+        if (winner === 1) {
+            winnerMessage.innerHTML = 'PLAYER 1 WIN !';
+            winnerMessage.classList.remove('hidden');
         } else {
-            loose.classList.remove('hidden');
+            winnerMessage.innerHTML = 'PLAYER 2 WIN !';
         }
+        winnerMessage.classList.remove('hidden');
+        btnRestart.classList.remove('hidden');
     }, 500);
 }
 
@@ -85,15 +83,17 @@ function hideSignal() {
     signal.style.visibility = 'hidden';
 }
 
+function attack() {
+    socket.emit('attack');
+}
+
 function launchGame() {
     gameIsReady = true;
     header.classList.add('hidden');
     container.classList.add('focus');
     hideButton();
     prepareFighters();
-    document.addEventListener('keyup', () => {
-        socket.emit('attack');
-    });
+    document.addEventListener('keyup', attack);
 }
 
 function hideButton () {
@@ -119,7 +119,7 @@ function waitOpponent() {
     container.classList.remove('focus');
     header.classList.add('blink-opacity');
     header.classList.remove('blink-border');
-    header.innerHTML = 'WAITING OPPONENT...';
+    header.innerHTML = 'AWAITING THE OPPONENT...';
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
     if (player === 1) {
@@ -131,18 +131,7 @@ function waitOpponent() {
 }
 
 function reset() {
-    gameIsReady = false;
-    signalShown = false;
-    showButton();
-    header.classList.remove('hidden');
-    header.classList.remove('blink-opacity');
-    header.classList.add('blink-border');
-    header.innerHTML = 'GET READY TO FIGHT !';
-    header.removeAttribute('style');
-    sayan.removeAttribute('style');
-    ennemy.removeAttribute('style');
-    ennemyIndicator.classList.remove('hidden');
-    sayanIndicator.classList.remove('hidden');
+    location.reload();
 }
 
 function prepareFighters() {
