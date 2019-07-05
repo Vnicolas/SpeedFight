@@ -133,7 +133,7 @@ header span.blink-opacity {
     background-size: cover;
 }
 
-#youWin {
+.end-message {
     position: absolute;
     z-index: 99;
     font-size: 2em;
@@ -141,9 +141,12 @@ header span.blink-opacity {
     top: 25%;
     padding: 20px;
     border: 6px solid #000;
+}
+
+#youWin {
     background-color: #FFD700;
 }
 
 #youLoose {
-
+    background-color: #ff0000;
 }

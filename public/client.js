@@ -15,6 +15,7 @@ const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
 const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
 const win = document.querySelector('#youWin');
+const loose = document.querySelector('#youLoose');
 
 // Socket events
 socket.on('game-ready', () => {
@@ -56,12 +57,20 @@ function animateFighter(winner) {
             container.removeAttribute('style');
         }, 800);
     } else {
-
+        ennemy.style.backgroundPosition = '-100% 15.9%';
+        ennemy.style.left = '46%';
+        sayan.style.backgroundPosition = '146% 20%';
+        setTimeout(() => {
+            ennemy.style.backgroundPosition = '31% 26.1%';
+            container.removeAttribute('style');
+        }, 800);
     }
 
     setTimeout(() => {
         if (winner === player) {
             win.classList.remove('hidden');
+        } else {
+            loose.classList.remove('hidden');
         }
     }, 500);
 }
