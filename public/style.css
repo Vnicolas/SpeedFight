@@ -102,7 +102,7 @@ header span.blink-opacity {
 
 #join-button {
     position: absolute;
-    top: 20em;
+    top: 7em;
     font-family: inherit;
     background-color: red;
     padding: 1em;
@@ -149,7 +149,7 @@ button:hover {
     z-index: 99;
     font-family: inherit;
     top: 45%;
-    left: calc(50% - 32px);
+    left: calc(50% - 62px);
     padding: 1em;
     background-color: #2ebcf6;
     color: #000;
