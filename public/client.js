@@ -2,7 +2,6 @@
 const socket = io(window.location.origin);
 let player = 1;
 let gameIsReady = false;
-let gameIsStarted = false;
 let signalShown = false;
 
 // HTML elements
@@ -19,19 +18,17 @@ const btnRestart = document.querySelector('#restart');
 const playerLabel = document.querySelector('#player');
 
 // Socket events
+socket.on('reset', () => {
+    reset();
+});
 socket.on('game-ready', () => {
     launchGame();
 });
 socket.on('firstPlayer', () => {
-    sayanIndicator.classList.remove('hidden');
-    sayanIndicator.classList.add('move');
-    playerLabel.innerHTML = 'You are ZACK';
+    selectFighter(1);
 });
 socket.on('lastPlayer', () => {
-    player = 2;
-    ennemyIndicator.classList.remove('hidden');
-    ennemyIndicator.classList.add('move');
-    playerLabel.innerHTML = 'You are GRUNT';
+    selectFighter(2);
 });
 socket.on('endGame', animateFighter);
 socket.on('signal', showSignal);
@@ -40,7 +37,24 @@ btnJoin.addEventListener('click', joinBattle);
 btnRestart.addEventListener('click', reset);
 
 // Functions
+function selectFighter(fighterId) {
+    if (fighterId === 1) {
+        player = 1;
+        sayanIndicator.classList.remove('hidden');
+        sayanIndicator.classList.remove('move');
+        sayanIndicator.classList.add('move');
+        playerLabel.innerHTML = 'You are ZACK';
+    } else {
+        player = 2;
+        ennemyIndicator.classList.remove('hidden');
+        ennemyIndicator.classList.remove('move');
+        ennemyIndicator.classList.add('move');
+        playerLabel.innerHTML = 'You are GRUNT';
+    }
+}
+
 function animateFighter(winner) {
+    gameIsReady = false;
     document.removeEventListener('keyup touchend', attack);
     container.classList.remove('focus');
     hideSignal();
@@ -68,7 +82,6 @@ function animateFighter(winner) {
     setTimeout(() => {
         if (winner === 1) {
             winnerMessage.innerHTML = 'Winner ZACK !!';
-            winnerMessage.classList.remove('hidden');
         } else {
             winnerMessage.innerHTML = 'Winner GRUNT !!';
         }
@@ -88,7 +101,9 @@ function hideSignal() {
 }
 
 function attack() {
-    socket.emit('attack');
+    if (gameIsReady === true) {
+        socket.emit('attack');
+    }
 }
 
 function launchGame() {
@@ -106,7 +121,7 @@ function hideButton () {
     btnJoin.classList.add('hidden');
 }
 
-function showButton () {
+function showButtonJoin () {
     btnJoin.classList.remove('hidden');
 }
 
@@ -132,8 +147,22 @@ function waitOpponent() {
 
 }
 
-function reset() {
-    location.reload();
+function reset(withTransition) {
+    if (withTransition === true) {
+        container.style.animation = 'blink-opacity .5s linear';
+    }
+    header.removeAttribute('style');
+    header.classList.add('hidden');
+    container.removeAttribute('style');
+    container.classList.remove('focus');
+    sayan.removeAttribute('style');
+    ennemy.removeAttribute('style');
+    winnerMessage.classList.add('hidden');
+    btnRestart.classList.add('hidden');
+    gameIsReady = false;
+    showButtonJoin();
+    hideSignal();
+    selectFighter(player);
 }
 
 function prepareFighters() {

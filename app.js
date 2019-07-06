@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
             lastPlayerConnected = false;
             lastPlayerReady = false;
         }
+        io.in('players room').emit('reset');
     });
 
     socket.on('ready', () => {
@@ -59,9 +60,12 @@ io.on('connection', (socket) => {
             signalShown = false;
             io.in('players room').emit('game-ready');
             setTimeout(() => {
-                if (fighterHasAttacked === false && signalShown === false) {
+                const allPLayersReady = firstPlayerReady === true && lastPlayerReady === true;
+                if (allPLayersReady && fighterHasAttacked === false && signalShown === false) {
                     io.in('players room').emit('signal');
                     signalShown = true;
+                } else {
+                    signalShown = false;
                 }
             }, generateTimer());
         }

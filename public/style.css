@@ -113,10 +113,14 @@ header span.blink-opacity {
     font-size: 5px;
     padding: 1.4px 1px 1px 1px;
     background-color: #ffffff;
-    left: 18px;
     top: -9px;
     border: 1px solid #001fff;
     color: #001fff;
+}
+
+.icon-fighter.sayan {
+    left: 18px;
+
 }
 
 .icon-fighter.sayan.move {
