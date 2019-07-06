@@ -114,7 +114,9 @@ function launchGame() {
     ennemyIndicator.classList.remove('move');
     hideButton();
     prepareFighters();
-    document.addEventListener('keyup', attack);
+    'keyup touchend'.split(' ').forEach((eventName) => {
+        document.addEventListener(eventName, attack);
+    });
 }
 
 function hideButton () {
