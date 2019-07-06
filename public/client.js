@@ -1,5 +1,5 @@
 // Variables initialization
-const socket = io('http://localhost:8888');
+const socket = io(window.location.origin);
 let player = 1;
 let gameIsReady = false;
 let gameIsStarted = false;
@@ -37,29 +37,32 @@ socket.on('endGame', animateFighter);
 socket.on('signal', showSignal);
 
 btnJoin.addEventListener('click', joinBattle);
+btnRestart.addEventListener('click', reset);
 
 // Functions
 function animateFighter(winner) {
-    document.removeEventListener('keyup', attack);
+    document.removeEventListener('keyup touchend', attack);
     container.classList.remove('focus');
     hideSignal();
     container.style.animation = 'blink-opacity .5s linear';
     if (winner === 1) {
-        sayan.style.backgroundPosition = '252% 13.5%';
-        sayan.style.left = '50%';
+        const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
+        sayan.style.backgroundPosition = '69.5% 13.1%';
+        sayan.style.left = leftCoordEnnemy;
         ennemy.style.backgroundPosition = '40% -5.2%';
         setTimeout(() => {
             sayan.style.backgroundPosition = '23.5% 0.1%';
             container.removeAttribute('style');
-        }, 800);
+        }, 500);
     } else {
+        const leftCoordSayan = sayan.getBoundingClientRect().right + 'px';
         ennemy.style.backgroundPosition = '10% 68.4%';
-        ennemy.style.left = '46%';
-        sayan.style.backgroundPosition = '146% 20%';
+        ennemy.style.left = leftCoordSayan;
+        sayan.style.backgroundPosition = '146.5% 20%';
         setTimeout(() => {
             ennemy.style.backgroundPosition = '31% 78.9%';
             container.removeAttribute('style');
-        }, 800);
+        }, 500);
     }
 
     setTimeout(() => {
@@ -71,7 +74,7 @@ function animateFighter(winner) {
         }
         winnerMessage.classList.remove('hidden');
         btnRestart.classList.remove('hidden');
-    }, 500);
+    }, 800);
 }
 
 function showSignal() {

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const server = app.listen(8888);
+const server = app.listen(5000);
 const io = require('socket.io')(server);
 
 const MIN_TIMER = 2;
@@ -24,6 +24,9 @@ function generateTimer() {
 }
 
 io.on('connection', (socket) => {
+    if (firstPlayerConnected && lastPlayerConnected) {
+        return;
+    }
     if (firstPlayerConnected === false) {
         firstPlayerConnected = true;
         socket.player = 1;

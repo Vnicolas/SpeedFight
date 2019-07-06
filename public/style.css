@@ -35,13 +35,13 @@ body {
 }
 
 header {
-    top: 10em;
+    top: 20%;
     text-align: center;
     background-color: transparent;
     position: absolute;
     z-index: 99;
     width: 100%;
-    font-size: 20px;
+    font-size: 0.7em;
 }
 
 header span {
@@ -68,6 +68,7 @@ header span.blink-opacity {
     background-image: url(./img/bg-1.gif);
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden;
 }
 
 .focus {
@@ -82,7 +83,7 @@ header span.blink-opacity {
     height: 76px;
     width: 60px;
     transform: scale(4);
-    left: calc(50% - 230px);
+    left: 15%;
 }
 
 #fighter-2 {
@@ -92,8 +93,8 @@ header span.blink-opacity {
     height: 100px;
     width: 100px;
     transform: scale(4, 4);
-    right: calc(50% - 190px);
-    background-position: -0.3% -10.5%;
+    right: 15%;
+    background-position: -0.3% -26.4%;
 }
 
 #player {
@@ -112,9 +113,6 @@ header span.blink-opacity {
     font-size: 5px;
     padding: 1.4px 1px 1px 1px;
     background-color: #ffffff;
-}
-
-.icon-fighter {
     left: 18px;
     top: -9px;
     border: 1px solid #001fff;
@@ -171,18 +169,18 @@ header span.blink-opacity {
 
 #join-button {
     position: absolute;
-    top: 20em;
+    top: 20%;
     font-family: inherit;
-    background-color: red;
+    background-color: #ffca00;
     padding: 1em;
     border: 3px outset #030000;
     cursor: pointer;
     z-index: 99;
-    left: calc(50% - 90px);
+    left: calc(50% - 102px);
 }
 
 #join-button:hover {
-    color: #fff;
+    color: #001fff;
     border-color: #fff;
 }
 
@@ -206,9 +204,9 @@ header span.blink-opacity {
     background-color: #000000;
     position: absolute;
     z-index: 99;
-    font-size: 2em;
-    left: calc(50% - 250px);
-    top: 25%;
+    font-size: 16px;
+    left: calc(50% - 140px);
+    top: 20%;
     padding: 20px;
     color: #FFD700;
 }
@@ -217,9 +215,9 @@ header span.blink-opacity {
     position: absolute;
     z-index: 99;
     font-family: inherit;
-    top: 45%;
+    top: 34%;
     left: calc(50% - 62px);
-    padding: 1em;
+    padding: 16px;
     background-color: #2ebcf6;
     color: #000;
     cursor: pointer;
