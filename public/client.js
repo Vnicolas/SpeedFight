@@ -6,6 +6,7 @@ let signalShown = false;
 
 // HTML elements
 const btnJoin = document.querySelector('#join-button');
+const btnRestart = document.querySelector('#restart');
 const header = document.querySelector('header span');
 const sayan = document.querySelector('#fighter-1');
 const sayanIndicator = document.querySelector('.icon-fighter.sayan');
@@ -14,7 +15,6 @@ const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
 const container = document.querySelector('.game-container');
 const signal = document.querySelector('#signal');
 const winnerMessage = document.querySelector('#winnerMessage');
-const btnRestart = document.querySelector('#restart');
 const playerLabel = document.querySelector('#player');
 
 // Socket events
@@ -53,6 +53,28 @@ function selectFighter(fighterId) {
     }
 }
 
+function sayanWin() {
+    const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
+    sayan.style.backgroundPosition = '69.5% 13.1%';
+    sayan.style.left = leftCoordEnnemy;
+    ennemy.style.backgroundPosition = '40% -5.2%';
+    setTimeout(() => {
+        sayan.style.backgroundPosition = '23.5% 0.1%';
+        container.removeAttribute('style');
+    }, 500);
+}
+
+function ennemyWin() {
+    const leftCoordSayan = sayan.getBoundingClientRect().right + 'px';
+    ennemy.style.backgroundPosition = '10% 68.4%';
+    ennemy.style.left = leftCoordSayan;
+    sayan.style.backgroundPosition = '146.5% 20%';
+    setTimeout(() => {
+        ennemy.style.backgroundPosition = '31% 78.9%';
+        container.removeAttribute('style');
+    }, 500);
+}
+
 function animateFighter(winner) {
     gameIsReady = false;
     document.removeEventListener('keyup touchend', attack);
@@ -60,23 +82,9 @@ function animateFighter(winner) {
     hideSignal();
     container.style.animation = 'blink-opacity .5s linear';
     if (winner === 1) {
-        const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
-        sayan.style.backgroundPosition = '69.5% 13.1%';
-        sayan.style.left = leftCoordEnnemy;
-        ennemy.style.backgroundPosition = '40% -5.2%';
-        setTimeout(() => {
-            sayan.style.backgroundPosition = '23.5% 0.1%';
-            container.removeAttribute('style');
-        }, 500);
+        sayanWin();
     } else {
-        const leftCoordSayan = sayan.getBoundingClientRect().right + 'px';
-        ennemy.style.backgroundPosition = '10% 68.4%';
-        ennemy.style.left = leftCoordSayan;
-        sayan.style.backgroundPosition = '146.5% 20%';
-        setTimeout(() => {
-            ennemy.style.backgroundPosition = '31% 78.9%';
-            container.removeAttribute('style');
-        }, 500);
+        ennemyWin();
     }
 
     setTimeout(() => {
