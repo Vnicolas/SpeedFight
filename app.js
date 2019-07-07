@@ -6,6 +6,9 @@ const io = require('socket.io')(server);
 const MIN_TIMER = 2;
 const MAX_TIMER = 6;
 
+const MIN_BG_ID = 1;
+const MAX_BG_ID = 11;
+
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -19,8 +22,8 @@ let lastPlayerReady = false;
 let signalShown = false;
 let fighterHasAttacked = false;
 
-function generateTimer() {
-    return Math.floor(Math.random() * (MAX_TIMER - MIN_TIMER + 1) + MIN_TIMER) * 1000;
+function generateNUmberinRange(min, max, multiplier) {
+    return Math.floor(Math.random() * (max - min + 1) + min) * multiplier;
 }
 
 io.on('connection', (socket) => {
@@ -67,7 +70,7 @@ io.on('connection', (socket) => {
                 } else {
                     signalShown = false;
                 }
-            }, generateTimer());
+            }, generateNUmberinRange(MIN_TIMER, MAX_TIMER, 1000));
         }
     });
 
@@ -76,11 +79,13 @@ io.on('connection', (socket) => {
             return;
         }
         if (fighterHasAttacked === false && signalShown === false) {
+            const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
             const winner = (socket.player === 1) ? 2 : 1;
-            io.in('players room').emit('endGame', winner);
+            io.in('players room').emit('endGame', {winner, nextBackground});
         } else {
+            const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
             const winner = socket.player;
-            io.in('players room').emit('endGame', winner);
+            io.in('players room').emit('endGame', {winner, nextBackground});
             signalShown = false;
         }
         fighterHasAttacked = true;

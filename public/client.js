@@ -3,6 +3,9 @@ const socket = io(window.location.origin);
 let player = 1;
 let gameIsReady = false;
 let signalShown = false;
+let nextBackground = 1;
+const MIN_ID = 1;
+const MAX_ID = 11;
 
 // HTML elements
 const btnJoin = document.querySelector('#join-button');
@@ -30,11 +33,16 @@ socket.on('firstPlayer', () => {
 socket.on('lastPlayer', () => {
     selectFighter(2);
 });
-socket.on('endGame', animateFighter);
+socket.on('endGame', (infos) => {
+    animateFighter(infos.winner);
+    nextBackground = infos.nextBackground;
+});
 socket.on('signal', showSignal);
 
 btnJoin.addEventListener('click', joinBattle);
-btnRestart.addEventListener('click', reset);
+btnRestart.addEventListener('click', () => {
+    reset(true);
+});
 
 // Functions
 function selectFighter(fighterId) {
@@ -60,7 +68,7 @@ function sayanWin() {
     ennemy.style.backgroundPosition = '40% -5.2%';
     setTimeout(() => {
         sayan.style.backgroundPosition = '23.5% 0.1%';
-        container.removeAttribute('style');
+        container.style.animation = 'none';
     }, 500);
 }
 
@@ -71,7 +79,7 @@ function ennemyWin() {
     sayan.style.backgroundPosition = '146.5% 20%';
     setTimeout(() => {
         ennemy.style.backgroundPosition = '31% 78.9%';
-        container.removeAttribute('style');
+        container.style.animation = 'none';
     }, 500);
 }
 
@@ -157,13 +165,14 @@ function waitOpponent() {
 
 }
 
-function reset(withTransition) {
-    if (withTransition === true) {
-        container.style.animation = 'blink-opacity .5s linear';
+function reset(_changeBackground) {
+    if (_changeBackground === true) {
+        changeBackground(nextBackground);
+    } else {
+        container.removeAttribute('style');
     }
     header.removeAttribute('style');
     header.classList.add('hidden');
-    container.removeAttribute('style');
     container.classList.remove('focus');
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
@@ -178,4 +187,8 @@ function reset(withTransition) {
 function prepareFighters() {
     sayan.style.backgroundPosition = '70.5% 0%';
     ennemy.style.backgroundPosition = '0% -15.9%';
+}
+
+function changeBackground(id) {
+    container.style.backgroundImage = `url('./img/bg-${id}.gif')`;
 }
