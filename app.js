@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const server = app.listen(5000);
+const server = app.listen(8080);
 const io = require('socket.io')(server);
 
 const MIN_TIMER = 2;
@@ -72,6 +72,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on('attack', () => {
+        if (fighterHasAttacked === true) {
+            return;
+        }
         if (fighterHasAttacked === false && signalShown === false) {
             const winner = (socket.player === 1) ? 2 : 1;
             io.in('players room').emit('endGame', winner);
