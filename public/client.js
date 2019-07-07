@@ -28,10 +28,10 @@ socket.on('game-ready', () => {
     launchGame();
 });
 socket.on('firstPlayer', () => {
-    selectFighter(1);
+    autoSelectFighter(1);
 });
 socket.on('lastPlayer', () => {
-    selectFighter(2);
+    autoSelectFighter(2);
 });
 socket.on('endGame', (infos) => {
     animateFighter(infos.winner);
@@ -39,13 +39,13 @@ socket.on('endGame', (infos) => {
 });
 socket.on('signal', showSignal);
 
-btnJoin.addEventListener('click', joinBattle);
+btnJoin.addEventListener('click', joinGame);
 btnRestart.addEventListener('click', () => {
     reset(true);
 });
 
-// Functions
-function selectFighter(fighterId) {
+// Game logic
+function autoSelectFighter(fighterId) {
     if (fighterId === 1) {
         player = 1;
         sayanIndicator.classList.remove('hidden');
@@ -61,26 +61,80 @@ function selectFighter(fighterId) {
     }
 }
 
-function sayanWin() {
-    const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
-    sayan.style.backgroundPosition = '69.5% 13.1%';
-    sayan.style.left = leftCoordEnnemy;
-    ennemy.style.backgroundPosition = '40% -5.2%';
-    setTimeout(() => {
-        sayan.style.backgroundPosition = '23.5% 0.1%';
-        container.style.animation = 'none';
-    }, 500);
+function joinGame() {
+    hideBtnJoin();
+    waitOpponent();
+    socket.emit('ready', player);
 }
 
-function ennemyWin() {
-    const leftCoordSayan = sayan.getBoundingClientRect().right + 'px';
-    ennemy.style.backgroundPosition = '10% 68.4%';
-    ennemy.style.left = leftCoordSayan;
-    sayan.style.backgroundPosition = '146.5% 20%';
-    setTimeout(() => {
-        ennemy.style.backgroundPosition = '31% 78.9%';
-        container.style.animation = 'none';
-    }, 500);
+function waitOpponent() {
+    gameIsReady = false;
+    signalShown = false;
+    hideSignal();
+    hideBtnJoin();
+    header.classList.remove('hidden');
+    header.classList.remove('blink-border');
+    container.classList.remove('focus');
+    header.classList.add('blink-opacity');
+    header.classList.remove('blink-border');
+    header.innerHTML = 'AWAITING THE OPPONENT...';
+    sayan.removeAttribute('style');
+    ennemy.removeAttribute('style');
+
+}
+
+function launchGame() {
+    gameIsReady = true;
+    header.classList.add('hidden');
+    container.classList.add('focus');
+    sayanIndicator.classList.remove('move');
+    ennemyIndicator.classList.remove('move');
+    hideBtnJoin();
+    prepareFighters();
+    'keyup touchend'.split(' ').forEach((eventName) => {
+        document.addEventListener(eventName, attack);
+    });
+}
+
+function showSignal() {
+    signalShown = true;
+    signal.style.visibility = 'visible';
+}
+
+function hideSignal() {
+    signalShown = false;
+    signal.style.visibility = 'hidden';
+}
+
+function reset(_changeBackground) {
+    if (_changeBackground === true) {
+        changeBackground(nextBackground);
+    } else {
+        container.removeAttribute('style');
+    }
+    header.removeAttribute('style');
+    header.classList.add('hidden');
+    container.classList.remove('focus');
+    sayan.removeAttribute('style');
+    ennemy.removeAttribute('style');
+    winnerMessage.classList.add('hidden');
+    btnRestart.classList.add('hidden');
+    gameIsReady = false;
+    showBtnJoin();
+    hideSignal();
+    autoSelectFighter(player);
+}
+
+// Fighters logic
+function prepareFighters() {
+    sayan.style.backgroundPosition = '70.5% 0%';
+    ennemy.style.backgroundPosition = '0% -15.9%';
+}
+
+function attack() {
+    if (gameIsReady === true) {
+        socket.emit('attack');
+    }
 }
 
 function animateFighter(winner) {
@@ -106,87 +160,35 @@ function animateFighter(winner) {
     }, 800);
 }
 
-function showSignal() {
-    signalShown = true;
-    signal.style.visibility = 'visible';
+function sayanWin() {
+    const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
+    sayan.style.backgroundPosition = '69.5% 13.1%';
+    sayan.style.left = leftCoordEnnemy;
+    ennemy.style.backgroundPosition = '40% -5.2%';
+    setTimeout(() => {
+        sayan.style.backgroundPosition = '23.5% 0.1%';
+        container.style.animation = 'none';
+    }, 500);
 }
 
-function hideSignal() {
-    signalShown = false;
-    signal.style.visibility = 'hidden';
+function ennemyWin() {
+    const leftCoordSayan = sayan.getBoundingClientRect().right + 'px';
+    ennemy.style.backgroundPosition = '10% 68.4%';
+    ennemy.style.left = leftCoordSayan;
+    sayan.style.backgroundPosition = '146.5% 20%';
+    setTimeout(() => {
+        ennemy.style.backgroundPosition = '31% 78.9%';
+        container.style.animation = 'none';
+    }, 500);
 }
 
-function attack() {
-    if (gameIsReady === true) {
-        socket.emit('attack');
-    }
-}
-
-function launchGame() {
-    gameIsReady = true;
-    header.classList.add('hidden');
-    container.classList.add('focus');
-    sayanIndicator.classList.remove('move');
-    ennemyIndicator.classList.remove('move');
-    hideButton();
-    prepareFighters();
-    'keyup touchend'.split(' ').forEach((eventName) => {
-        document.addEventListener(eventName, attack);
-    });
-}
-
-function hideButton () {
+// Display logic
+function hideBtnJoin() {
     btnJoin.classList.add('hidden');
 }
 
-function showButtonJoin () {
+function showBtnJoin() {
     btnJoin.classList.remove('hidden');
-}
-
-function joinBattle () {
-    hideButton();
-    waitOpponent();
-    socket.emit('ready', player);
-}
-
-function waitOpponent() {
-    gameIsReady = false;
-    signalShown = false;
-    hideSignal();
-    hideButton();
-    header.classList.remove('hidden');
-    header.classList.remove('blink-border');
-    container.classList.remove('focus');
-    header.classList.add('blink-opacity');
-    header.classList.remove('blink-border');
-    header.innerHTML = 'AWAITING THE OPPONENT...';
-    sayan.removeAttribute('style');
-    ennemy.removeAttribute('style');
-
-}
-
-function reset(_changeBackground) {
-    if (_changeBackground === true) {
-        changeBackground(nextBackground);
-    } else {
-        container.removeAttribute('style');
-    }
-    header.removeAttribute('style');
-    header.classList.add('hidden');
-    container.classList.remove('focus');
-    sayan.removeAttribute('style');
-    ennemy.removeAttribute('style');
-    winnerMessage.classList.add('hidden');
-    btnRestart.classList.add('hidden');
-    gameIsReady = false;
-    showButtonJoin();
-    hideSignal();
-    selectFighter(player);
-}
-
-function prepareFighters() {
-    sayan.style.backgroundPosition = '70.5% 0%';
-    ennemy.style.backgroundPosition = '0% -15.9%';
 }
 
 function changeBackground(id) {
