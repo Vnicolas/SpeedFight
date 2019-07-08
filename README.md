@@ -1,6 +1,6 @@
 # Speed Battle 🥊
 
-Speed Battle is game who the first to attack when the "!" appear is the winner.
+Speed Battle is a game who the first to attack when the "!" appear is the winner.
 
 ## Installation
 
