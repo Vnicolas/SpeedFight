@@ -72,15 +72,12 @@ function waitOpponent() {
     signalShown = false;
     hideSignal();
     hideBtnJoin();
-    header.classList.remove('hidden');
-    header.classList.remove('blink-border');
     container.classList.remove('focus');
+    header.classList.remove('hidden');
     header.classList.add('blink-opacity');
-    header.classList.remove('blink-border');
     header.innerHTML = 'AWAITING THE OPPONENT...';
     sayan.removeAttribute('style');
     ennemy.removeAttribute('style');
-
 }
 
 function launchGame() {
