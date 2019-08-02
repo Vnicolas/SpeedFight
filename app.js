@@ -78,16 +78,15 @@ io.on('connection', (socket) => {
         if (fighterHasAttacked === true) {
             return;
         }
-        if (fighterHasAttacked === false && signalShown === false) {
-            const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
-            const winner = (socket.player === 1) ? 2 : 1;
-            io.in('players room').emit('endGame', {winner, nextBackground});
+        const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
+        let winner;
+        if (signalShown === false) {
+            winner = (socket.player === 1) ? 2 : 1;
         } else {
-            const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
-            const winner = socket.player;
-            io.in('players room').emit('endGame', {winner, nextBackground});
+            winner = socket.player;
             signalShown = false;
         }
+        io.in('players room').emit('endGame', {winner, nextBackground});
         fighterHasAttacked = true;
         firstPlayerReady = false;
         lastPlayerReady = false;
