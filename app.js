@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('attack', () => {
+    socket.on('attack', (timeToAttack) => {
         if (fighterHasAttacked === true) {
             return;
         }
@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
             winner = socket.player;
             signalShown = false;
         }
-        io.in('players room').emit('endGame', {winner, nextBackground});
+        io.in('players room').emit('endGame', {winner, nextBackground, timeToAttack});
         fighterHasAttacked = true;
         firstPlayerReady = false;
         lastPlayerReady = false;

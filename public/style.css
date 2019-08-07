@@ -215,6 +215,8 @@ header span.blink-opacity {
     top: 20%;
     padding: 20px;
     color: #FFD700;
+    text-align: center;
+    line-height: 25px;
 }
 
 #restart {

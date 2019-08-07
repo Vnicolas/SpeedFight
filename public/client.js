@@ -4,8 +4,8 @@ let player = 1;
 let gameIsReady = false;
 let signalShown = false;
 let nextBackground = 1;
-const MIN_ID = 1;
-const MAX_ID = 11;
+let timer;
+let timeToAttack = 0;
 
 function getEl(identifier) {
     return  document.querySelector(identifier);
@@ -39,15 +39,11 @@ socket.on('lastPlayer', () => {
     autoSelectFighter(2);
 });
 socket.on('endGame', (infos) => {
-    animateFighter(infos.winner);
+    timeToAttack = (infos.timeToAttack / 1000).toFixed(3);
+    animateFighter(infos.winner, timeToAttack);
     nextBackground = infos.nextBackground;
 });
 socket.on('signal', showSignal);
-
-btnJoin.addEventListener('click', joinGame);
-btnRestart.addEventListener('click', () => {
-    reset(true);
-});
 
 function showRules() {
     modalRules.style.display = 'block';
@@ -109,6 +105,9 @@ function launchGame() {
 function showSignal() {
     signalShown = true;
     signal.style.visibility = 'visible';
+    timer = setInterval(() => {
+        timeToAttack += 1;
+    }, 1);
 }
 
 function hideSignal() {
@@ -117,6 +116,8 @@ function hideSignal() {
 }
 
 function reset(_changeBackground) {
+    timeToAttack = 0;
+    clearInterval(timer);
     if (_changeBackground === true) {
         changeBackground(nextBackground);
     } else {
@@ -143,11 +144,12 @@ function prepareFighters() {
 
 function attack() {
     if (gameIsReady === true) {
-        socket.emit('attack');
+        clearInterval(timer);
+        socket.emit('attack', timeToAttack);
     }
 }
 
-function animateFighter(winner) {
+function animateFighter(winner, timeToAttack) {
     gameIsReady = false;
     document.removeEventListener('keyup touchend', attack);
     container.classList.remove('focus');
@@ -161,9 +163,9 @@ function animateFighter(winner) {
 
     setTimeout(() => {
         if (winner === 1) {
-            winnerMessage.innerHTML = 'Winner ZACK !!';
+            winnerMessage.innerHTML = `Winner ZACK !! <br>(${timeToAttack}s)`;
         } else {
-            winnerMessage.innerHTML = 'Winner GRUNT !!';
+            winnerMessage.innerHTML = `Winner GRUNT !! <br>(${timeToAttack}s)`;
         }
         winnerMessage.classList.remove('hidden');
         btnRestart.classList.remove('hidden');
@@ -172,7 +174,7 @@ function animateFighter(winner) {
 
 function sayanWin() {
     const leftCoordEnnemy = ennemy.getBoundingClientRect().left + 30 + 'px';
-    sayan.style.backgroundPosition = '69.5% 13.1%';
+    sayan.style.backgroundPosition = '70.5% 13.1%';
     sayan.style.left = leftCoordEnnemy;
     ennemy.style.backgroundPosition = '40% -5.2%';
     setTimeout(() => {
