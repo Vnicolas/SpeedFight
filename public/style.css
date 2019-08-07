@@ -233,3 +233,54 @@ header span.blink-opacity {
 #restart:hover {
     color: #fff;
 }
+
+#rules {
+    position: absolute;
+    z-index: 99;
+    right: 10px;
+    padding: 5px 10px;
+    font-family: inherit;
+    background-color: #2e6382;
+    border: 3px outset #030000;
+    line-height: 20px;
+    color: #fff;
+    top: 10px;
+    cursor: pointer;
+}
+
+#rules:hover {
+    border-color: #fff;
+}
+
+#rules span {
+    font-size: 20px;
+}
+
+#modal-rules {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 60px;
+    background-color: #fff;
+    padding: 40px;
+    z-index: 999;
+    top: 0;
+    bottom: 0;
+    opacity: 0.9;
+    overflow: auto;
+}
+
+#modal-content {
+    line-height: 25px;
+}
+
+#modal-close {
+    float: right;
+    border: 1px solid #000;
+    padding-left: 6px;
+    padding-top: 6px;
+    cursor: pointer;
+    padding-right: 3px;
+    padding-bottom: 3px;
+}

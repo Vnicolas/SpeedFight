@@ -7,18 +7,23 @@ let nextBackground = 1;
 const MIN_ID = 1;
 const MAX_ID = 11;
 
+function getEl(identifier) {
+    return  document.querySelector(identifier);
+}
+
 // HTML elements
-const btnJoin = document.querySelector('#join-button');
-const btnRestart = document.querySelector('#restart');
-const header = document.querySelector('header span');
-const sayan = document.querySelector('#fighter-1');
-const sayanIndicator = document.querySelector('.icon-fighter.sayan');
-const ennemy = document.querySelector('#fighter-2');
-const ennemyIndicator = document.querySelector('.icon-fighter.ennemy');
-const container = document.querySelector('.game-container');
-const signal = document.querySelector('#signal');
-const winnerMessage = document.querySelector('#winnerMessage');
-const playerLabel = document.querySelector('#player');
+const btnJoin = getEl('#join-button');
+const modalRules = getEl('#modal-rules');
+const btnRestart = getEl('#restart');
+const header = getEl('header span');
+const sayan = getEl('#fighter-1');
+const sayanIndicator = getEl('.icon-fighter.sayan');
+const ennemy = getEl('#fighter-2');
+const ennemyIndicator = getEl('.icon-fighter.ennemy');
+const container = getEl('.game-container');
+const signal = getEl('#signal');
+const winnerMessage = getEl('#winnerMessage');
+const playerLabel = getEl('#player');
 
 // Socket events
 socket.on('reset', () => {
@@ -43,6 +48,14 @@ btnJoin.addEventListener('click', joinGame);
 btnRestart.addEventListener('click', () => {
     reset(true);
 });
+
+function showRules() {
+    modalRules.style.display = 'block';
+}
+
+function hideRules() {
+    modalRules.style.display = 'none';
+}
 
 // Game logic
 function autoSelectFighter(fighterId) {

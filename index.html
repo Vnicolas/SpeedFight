@@ -9,6 +9,7 @@
 </head>
 <body>
     <span id="player"></span>
+    <button type="button" id="rules" onclick="showRules();"><span>📔</span> Rules</button>
     <header>
         <span class="blink-border hidden"></span>
     </header>
@@ -23,6 +24,22 @@
         <span id="fighter-2">
             <span class="icon-fighter ennemy">GRUNT</span>
         </span>
+    </div>
+
+    <div id="modal-rules">
+        <span id="modal-close" onclick="hideRules();">&times;</span>
+        <div>
+            <h2 id="modal-title">Rules of the game :</h2>
+        </div>
+
+        <div id="modal-content">
+            Two players compete in a duel.<br>
+            After clicking on the "Join battle !" button the game starts.<br>
+            A "!" sign appears on the screen after a delay of 2 and 6 seconds.
+            The first player to press a key (or tap the screen on a mobile phone) wins.<br>
+            If a player presses a key before the sign appears, he misses his move and wins his opponent.<br><br>
+            Be the fastest!
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
