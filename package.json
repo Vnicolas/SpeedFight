@@ -1,5 +1,5 @@
 {
-  "name": "beekast-fight",
+  "name": "speed-fight",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vnicolas/beekast-fight.git"
+    "url": "git+https://github.com/Vnicolas/SpeedFight.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nicolas Vairaa",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Vnicolas/beekast-fight/issues"
+    "url": "https://github.com/Vnicolas/SpeedFight/issues"
   },
-  "homepage": "https://github.com/Vnicolas/beekast-fight#readme",
+  "homepage": "https://github.com/Vnicolas/SpeedFight#readme",
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^1.19.1",
