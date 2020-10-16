@@ -34,10 +34,11 @@ Change a file and the server will restart and the browser will refresh.
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
-# TODO 
+# TODO
 - Refactor JS files
 - Add a state management for the game workflow
 - Add possibility to choose between multiple characters
 - Add possibility to choose the background (level background)
 - Add more animations for characters
 - Add tests
+- Add deconnexion handler

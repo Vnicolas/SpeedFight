@@ -1,7 +1,8 @@
-const express = require('express');
+const express = require('express');;
 const app = express();
 const server = app.listen(8080);
 const io = require('socket.io')(server);
+import { generateNumberInRange } from './utils';
 
 const MIN_TIMER = 2;
 const MAX_TIMER = 6;
@@ -21,10 +22,6 @@ let firstPlayerReady = false;
 let lastPlayerReady = false;
 let signalShown = false;
 let fighterHasAttacked = false;
-
-function generateNUmberinRange(min, max, multiplier) {
-    return Math.floor(Math.random() * (max - min + 1) + min) * multiplier;
-}
 
 io.on('connection', (socket) => {
     if (firstPlayerConnected && lastPlayerConnected) {
@@ -63,14 +60,14 @@ io.on('connection', (socket) => {
             signalShown = false;
             io.in('players room').emit('game-ready');
             setTimeout(() => {
-                const allPLayersReady = firstPlayerReady === true && lastPlayerReady === true;
-                if (allPLayersReady && fighterHasAttacked === false && signalShown === false) {
+                const allPlayersReady = firstPlayerReady === true && lastPlayerReady === true;
+                if (allPlayersReady && fighterHasAttacked === false && signalShown === false) {
                     io.in('players room').emit('signal');
                     signalShown = true;
                 } else {
                     signalShown = false;
                 }
-            }, generateNUmberinRange(MIN_TIMER, MAX_TIMER, 1000));
+            }, generateNumberInRange(MIN_TIMER, MAX_TIMER, 1000));
         }
     });
 
@@ -78,17 +75,22 @@ io.on('connection', (socket) => {
         if (fighterHasAttacked === true) {
             return;
         }
-        const nextBackground = generateNUmberinRange(MIN_BG_ID, MAX_BG_ID, 1);
+        fighterHasAttacked = true;
         let winner;
         if (signalShown === false) {
             winner = (socket.player === 1) ? 2 : 1;
         } else {
             winner = socket.player;
-            signalShown = false;
         }
+        const nextBackground = generateNumberInRange(MIN_BG_ID, MAX_BG_ID);
         io.in('players room').emit('endGame', {winner, nextBackground, timeToAttack});
-        fighterHasAttacked = true;
-        firstPlayerReady = false;
-        lastPlayerReady = false;
+        resetGame();
     });
 });
+
+function resetGame() {
+    fighterHasAttacked = false;
+    firstPlayerReady = false;
+    lastPlayerReady = false;
+    signalShown = false;
+}
