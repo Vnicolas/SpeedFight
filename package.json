@@ -19,12 +19,16 @@
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^1.19.1",
+    "robot3": "^0.2.18",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.1",
     "@babel/node": "^7.12.1",
-    "@babel/preset-env": "^7.12.1"
-  }
+    "@babel/preset-env": "^7.12.1",
+    "prettier": "^2.1.2",
+    "prettier-airbnb-config": "^1.0.0"
+  },
+  "prettier": "prettier-airbnb-config"
 }
