@@ -19,7 +19,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "nodemon": "^1.19.1",
-    "robot3": "^0.2.18",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
