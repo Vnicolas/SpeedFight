@@ -4,17 +4,17 @@ const server = app.listen(8080);
 const io = require('socket.io')(server);
 import {generateNumberInRange} from './utils';
 
-const MIN_TIMER = 2;
-const MAX_TIMER = 6;
-
-const MIN_BG_ID = 1;
-const MAX_BG_ID = 11;
-
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
+
+// Signal shown after the time (in seconds)
+const MIN_TIMER = 2;
+const MAX_TIMER = 6;
+const MIN_BG_ID = 1;
+const MAX_BG_ID = 11;
 
 let firstPlayerConnected = false;
 let lastPlayerConnected = false;
@@ -28,23 +28,18 @@ io.on('connection', socket => {
     return;
   }
   if (firstPlayerConnected === false) {
-    firstPlayerConnected = true;
-    socket.player = 1;
-    io.to(`${socket.id}`).emit('firstPlayer');
+    setFirstPlayer(socket);
   } else {
-    lastPlayerConnected = true;
-    socket.player = 2;
-    io.to(`${socket.id}`).emit('lastPlayer');
+    setLastPlayer(socket);
   }
+
   socket.join('players room');
 
   socket.on('disconnect', () => {
     if (socket.player === 1) {
-      firstPlayerConnected = false;
-      firstPlayerReady = false;
+      resetFirstPlayer();
     } else {
-      lastPlayerConnected = false;
-      lastPlayerReady = false;
+      resetLastPlayer();
     }
     io.in('players room').emit('reset');
   });
@@ -56,18 +51,8 @@ io.on('connection', socket => {
       lastPlayerReady = true;
     }
     if (firstPlayerReady && lastPlayerReady) {
-      fighterHasAttacked = false;
-      signalShown = false;
-      io.in('players room').emit('game-ready');
-      setTimeout(() => {
-        const allPlayersReady = firstPlayerReady === true && lastPlayerReady === true;
-        if (allPlayersReady && fighterHasAttacked === false && signalShown === false) {
-          io.in('players room').emit('signal');
-          signalShown = true;
-        } else {
-          signalShown = false;
-        }
-      }, generateNumberInRange(MIN_TIMER, MAX_TIMER, 1000));
+      prepareGame();
+      launchGame();
     }
   });
 
@@ -82,15 +67,56 @@ io.on('connection', socket => {
     } else {
       winner = socket.player;
     }
-    const nextBackground = generateNumberInRange(MIN_BG_ID, MAX_BG_ID);
-    io.in('players room').emit('endGame', {winner, nextBackground, timeToAttack});
-    resetGame();
+    resetGame(winner, timeToAttack);
   });
 });
 
-function resetGame() {
+function resetGame(winner, timeToAttack) {
+  const nextBackground = generateNumberInRange(MIN_BG_ID, MAX_BG_ID);
+  io.in('players room').emit('endGame', {winner, nextBackground, timeToAttack});
   fighterHasAttacked = false;
   firstPlayerReady = false;
   lastPlayerReady = false;
   signalShown = false;
+}
+
+function prepareGame() {
+  fighterHasAttacked = false;
+  signalShown = false;
+  io.in('players room').emit('game-ready');
+}
+
+function setFirstPlayer(socket) {
+  firstPlayerConnected = true;
+  socket.player = 1;
+  io.to(`${socket.id}`).emit('firstPlayer');
+}
+
+function setLastPlayer(socket) {
+  lastPlayerConnected = true;
+  socket.player = 2;
+  io.to(`${socket.id}`).emit('lastPlayer');
+}
+
+function resetFirstPlayer() {
+  firstPlayerConnected = false;
+  firstPlayerReady = false;
+}
+
+function resetLastPlayer() {
+  lastPlayerConnected = false;
+  lastPlayerReady = false;
+}
+
+function launchGame() {
+  setTimeout(() => {
+    const playersReady = firstPlayerReady === true && lastPlayerReady === true;
+    const gameCanStart = fighterHasAttacked === false && signalShown === false;
+    if (playersReady && gameCanStart) {
+      io.in('players room').emit('signal');
+      signalShown = true;
+    } else {
+      signalShown = false;
+    }
+  }, generateNumberInRange(MIN_TIMER, MAX_TIMER, 1000));
 }
