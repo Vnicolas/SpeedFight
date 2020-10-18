@@ -19,8 +19,6 @@ io.on('connection', socket => {
 
   gameService.setPlayer(socket);
 
-  socket.join('players room');
-
   socket.on('disconnect', () => {
     gameService.resetPlayer(socket);
   });

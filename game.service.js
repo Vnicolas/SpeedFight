@@ -59,11 +59,12 @@ class GameService {
   }
 
   setPlayer(socket) {
-    if (this.firstPlayerConnected === false) {
+    if (!this.firstPlayerConnected) {
       this.setFirstPlayer(socket);
     } else {
       this.setLastPlayer(socket);
     }
+    socket.join('players room');
   }
 
   resetPlayer(socket) {
